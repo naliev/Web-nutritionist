@@ -39,7 +39,8 @@ public class UserMealsUtil {
         int startPointer = -1;
         int currentPointer = 0;
         int endPointer = 0;
-        for (UserMeal meal : meals) {
+        while (currentPointer <meals.size()) {
+            UserMeal meal = meals.get(currentPointer);
             LocalDateTime curDay = meal.getDateTime();
             if (startPointer == -1 && TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
                 startPointer = currentPointer;
@@ -60,8 +61,8 @@ public class UserMealsUtil {
                     endPointer++;
                 }
                 currentCalories += meal.getCalories();
+                currentPointer++;
             }
-            currentPointer++;
         }
         boolean exceeded = currentCalories >= caloriesPerDay;
         for (int i = startPointer; i < endPointer; i++) {
