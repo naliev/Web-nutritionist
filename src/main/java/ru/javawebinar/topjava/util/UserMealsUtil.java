@@ -3,9 +3,11 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
+import javax.xml.stream.events.EndDocument;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,8 +30,45 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with excess. Implement by cycles
-        return null;
+        List<UserMealWithExcess> list = new ArrayList<>();
+        if (meals.size() == 0) {
+            return list;
+        }
+        LocalDateTime previousDay = meals.get(0).getDateTime();
+        int currentCalories = 0;
+        int startPointer = -1;
+        int currentPointer = 0;
+        int endPointer = 0;
+        for (UserMeal meal : meals) {
+            LocalDateTime curDay = meal.getDateTime();
+            if (startPointer == -1 && TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                startPointer = currentPointer;
+                endPointer = currentPointer;
+            }
+            if (!curDay.getDayOfWeek().equals(previousDay.getDayOfWeek())) {
+                boolean exceeded = currentCalories >= caloriesPerDay;
+                for (int i = startPointer; i < endPointer; i++) {
+                    UserMeal userMeal = meals.get(i);
+                    list.add(new UserMealWithExcess(curDay, userMeal.getDescription(), userMeal.getCalories(), exceeded));
+                }
+                startPointer = -1;
+                endPointer = -1;
+                previousDay = curDay;
+                currentCalories = 0;
+            } else {
+                if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                    endPointer++;
+                }
+                currentCalories += meal.getCalories();
+            }
+            currentPointer++;
+        }
+        boolean exceeded = currentCalories >= caloriesPerDay;
+        for (int i = startPointer; i < endPointer; i++) {
+            UserMeal userMeal = meals.get(i);
+            list.add(new UserMealWithExcess(previousDay, userMeal.getDescription(), userMeal.getCalories(), exceeded));
+        }
+        return list;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
