@@ -32,40 +32,16 @@ public class UserMealsUtil {
         if (meals.size() == 0) {
             return list;
         }
-        LocalDateTime previousDay = meals.get(0).getDateTime();
-        int currentCalories = 0;
-        int startPointer = -1;
-        int currentPointer = 0;
-        int endPointer = 0;
-        while (currentPointer < meals.size()) {
-            UserMeal meal = meals.get(currentPointer);
-            LocalDateTime curDay = meal.getDateTime();
-            if (startPointer == -1 && TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-                startPointer = currentPointer;
-                endPointer = currentPointer;
-            }
-            if (!curDay.getDayOfWeek().equals(previousDay.getDayOfWeek())) {
-                boolean exceeded = currentCalories >= caloriesPerDay;
-                for (int i = startPointer; i < endPointer; i++) {
-                    UserMeal userMeal = meals.get(i);
-                    list.add(new UserMealWithExcess(curDay, userMeal.getDescription(), userMeal.getCalories(), exceeded));
-                }
-                startPointer = -1;
-                endPointer = -1;
-                previousDay = curDay;
-                currentCalories = 0;
-            } else {
-                if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-                    endPointer++;
-                }
-                currentCalories += meal.getCalories();
-                currentPointer++;
-            }
+        Map<LocalDate, Integer> calories = new HashMap<>();
+        for (UserMeal meal : meals) {
+            calories.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
         }
-        boolean exceeded = currentCalories >= caloriesPerDay;
-        for (int i = startPointer; i < endPointer; i++) {
-            UserMeal userMeal = meals.get(i);
-            list.add(new UserMealWithExcess(previousDay, userMeal.getDescription(), userMeal.getCalories(), exceeded));
+        for (UserMeal meal : meals) {
+            LocalDateTime dateTime = meal.getDateTime();
+            if (TimeUtil.isBetweenHalfOpen(dateTime.toLocalTime(), startTime, endTime)) {
+                list.add(new UserMealWithExcess(dateTime, meal.getDescription(), meal.getCalories(),
+                        calories.getOrDefault(dateTime.toLocalDate(), 0) > caloriesPerDay));
+            }
         }
         return list;
     }
@@ -74,11 +50,11 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> collectedMeals = meals.stream().collect(
                 Collectors.groupingBy(userMeal -> userMeal.getDateTime().toLocalDate(),
                         Collectors.summingInt(UserMeal::getCalories)));
-        return meals.stream().filter(userMeal ->
-                        TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+        return meals.stream()
+                .filter(userMeal -> TimeUtil.isBetweenHalfOpen(userMeal.getDateTime().toLocalTime(), startTime, endTime))
                 .map(userMeal -> new UserMealWithExcess(userMeal.getDateTime(),
                         userMeal.getDescription(), userMeal.getCalories(),
-                        collectedMeals.get(userMeal.getDateTime().toLocalDate()) >= caloriesPerDay))
+                        collectedMeals.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 }
