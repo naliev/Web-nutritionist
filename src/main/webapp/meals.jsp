@@ -9,7 +9,7 @@
 <hr>
 <h2>Meals</h2>
 <div>
-    <a href="meals.jsp?action=add"><p>Add meal</p></a>
+    <a href="meals?action=add"><p>Add meal</p></a>
 </div>
 <div>
     <table cellspacing="2" border="1" cellpadding="5" width="600">
@@ -24,7 +24,6 @@
 
         <jsp:useBean id="meals" scope="request" type="java.util.List"/>
         <jsp:useBean id="TimeUtil" class="ru.javawebinar.topjava.util.TimeUtil"/>
-        <c:set var="count" value="0" scope="page"/>
         <c:forEach var="meal" items="${meals}">
 
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
@@ -33,11 +32,9 @@
             <td><p>${TimeUtil.getFormattedDate(meal.dateTime)}</p></td>
             <td><p>${meal.description}</p></td>
             <td><p>${meal.calories}</p></td>
-            <%--<td><a href="meals.jsp?uuid=<c:out value="${count}"/>&action=update">update</a></td>
-            <td><a href="meals.jsp?uuid=<c:out value="${count}"/>&action=delete">delete</a></td>
-            --%>
+            <td><a href="meals?id=<c:out value="${meal.id}"/>&action=update">update</a></td>
+            <td><a href="meals?id=<c:out value="${meal.id}"/>&action=delete">delete</a></td>
         </tr>
-            <c:set var="count" value="${count + 1}" scope="page"/>
         </c:forEach>
     </table>
 </div>
