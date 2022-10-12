@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.storage.InMemoryMealStorage;
+import ru.javawebinar.topjava.storage.Storage;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
 
@@ -19,68 +20,69 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private static final InMemoryMealStorage storage = new InMemoryMealStorage();
+    private final Storage storage = new InMemoryMealStorage();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to meal servlet - GET");
         String action = request.getParameter("action");
-        if (action == null) {
-            forwardToMealsList(request, response);
-            return;
-        }
-        Meal m;
-        int id;
-        switch (action) {
+        switch (action != null ? action : "show all") {
             case "add":
                 log.debug("adding new meal");
-                m = MealsUtil.EMPTY;
+                request.setAttribute("meal", MealsUtil.EMPTY);
                 break;
             case "delete":
-                id = Integer.parseInt(request.getParameter("id"));
-                log.debug(String.format("deleting meal with %d id", id));
+                int id = getIdFromRequest(request);
+                log.debug("deleting meal with {} id", id);
                 if (storage.delete(id)) {
-                    log.debug(String.format("meal successfully deleted with %d id", id));
+                    log.debug("meal successfully deleted with {} id", id);
                 } else {
-                    log.debug(String.format("meal was not deleted with %d id", id));
+                    log.debug("meal was not deleted with {} id", id);
                 }
                 response.sendRedirect("meals");
                 return;
             case "update":
-                id = Integer.parseInt(request.getParameter("id"));
-                log.debug(String.format("updating meal with %d id", id));
-                m = storage.get(id);
+                id = getIdFromRequest(request);
+                log.debug("updating meal with {} id", id);
+                request.setAttribute("meal", storage.get(id));
                 break;
             default:
                 forwardToMealsList(request, response);
                 return;
         }
-        request.setAttribute("meal", m);
         request.getRequestDispatcher("meal.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         log.debug("forward to meal servlet - POST");
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime;
         try {
             dateTime = TimeUtil.getDateFromString(request.getParameter("dateTime"));
         } catch (DateTimeParseException e) {
-            log.error(String.format("Cannot parse date from string %S", request.getParameter("dateTime")));
+            log.error("Cannot parse date from string {}", request.getParameter("dateTime"));
+            throw e;
         }
         Meal m = new Meal(dateTime,
                 request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
         String id = request.getParameter("id");
         if (id.isEmpty()) {
             storage.create(m);
-            log.debug(String.format("New meal successfully saved with %S id", m.getId()));
+            log.debug("New meal successfully saved with {} id", m.getId());
         } else {
             m.setId(Integer.parseInt(id));
-            storage.update(m);
-            log.debug(String.format("Meal successfully updated with %S id", m.getId()));
+            if (storage.update(m) != null) {
+                log.debug("Meal successfully updated with {} id", m.getId());
+            } else {
+                log.error("Meal cannot be updated with {} id, no such meal in the storage", m.getId());
+            }
+
         }
-        inputFilteredMealsListIntoRequestAttribute(request);
-        request.getRequestDispatcher("meals.jsp").forward(request, response);
+        response.sendRedirect("meals");
+    }
+
+    private int getIdFromRequest(HttpServletRequest r) {
+        return Integer.parseInt(r.getParameter("id"));
     }
 
     private void forwardToMealsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
