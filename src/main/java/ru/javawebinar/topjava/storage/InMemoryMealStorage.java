@@ -10,13 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealStorage implements Storage {
-    protected final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
-    private static final AtomicInteger COUNTER = new AtomicInteger(1);
+    private final Map<Integer, Meal> storage = new ConcurrentHashMap<>();
+    private final AtomicInteger counter = new AtomicInteger(1);
 
     public InMemoryMealStorage() {
         for (Meal m : MealsUtil.getTestData()) {
-            m.setId(COUNTER.getAndIncrement());
-            storage.put(m.getId(), m);
+            create(m);
         }
     }
 
@@ -32,25 +31,18 @@ public class InMemoryMealStorage implements Storage {
 
     @Override
     public Meal update(Meal m) {
-        storage.replace(m.getId(), m);
-        return m;
+        return storage.replace(m.getId(), m);
     }
 
     @Override
     public Meal create(Meal m) {
-        m.setId(COUNTER.getAndIncrement());
+        m.setId(counter.getAndIncrement());
         storage.put(m.getId(), m);
         return m;
     }
 
     @Override
     public boolean delete(int id) {
-        if (storage.containsKey(id)) {
-            storage.remove(id);
-            return true;
-        } else {
-            return false;
-        }
+        return storage.remove(id) != null;
     }
-
 }
