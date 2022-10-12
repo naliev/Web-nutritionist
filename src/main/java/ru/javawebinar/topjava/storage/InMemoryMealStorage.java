@@ -31,7 +31,7 @@ public class InMemoryMealStorage implements Storage {
 
     @Override
     public Meal update(Meal m) {
-        return storage.replace(m.getId(), m);
+        return storage.replace(m.getId(), m) != null ? m : null;
     }
 
     @Override
