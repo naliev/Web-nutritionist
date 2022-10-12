@@ -14,8 +14,4 @@ public class TimeUtil {
     public String getFormattedDate(LocalDateTime localDateTime) {
         return (localDateTime == null) ? "" : localDateTime.format(DATE_FORMATTER);
     }
-
-    public static LocalDateTime getDateFromString(String str) {
-        return LocalDateTime.parse(str);
-    }
 }

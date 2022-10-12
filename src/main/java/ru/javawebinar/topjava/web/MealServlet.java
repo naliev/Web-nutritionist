@@ -5,8 +5,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.storage.InMemoryMealStorage;
 import ru.javawebinar.topjava.storage.Storage;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.TimeUtil;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +20,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private final Storage storage = new InMemoryMealStorage();
+    private Storage storage;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        storage = new InMemoryMealStorage();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,7 +53,9 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", storage.get(id));
                 break;
             default:
-                forwardToMealsList(request, response);
+                log.debug("no action was sent - show all meals");
+                request.setAttribute("meals", MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
                 return;
         }
         request.getRequestDispatcher("meal.jsp").forward(request, response);
@@ -58,13 +66,12 @@ public class MealServlet extends HttpServlet {
         log.debug("forward to meal servlet - POST");
         LocalDateTime dateTime;
         try {
-            dateTime = TimeUtil.getDateFromString(request.getParameter("dateTime"));
+            dateTime = LocalDateTime.parse(request.getParameter("dateTime"));
         } catch (DateTimeParseException e) {
             log.error("Cannot parse date from string {}", request.getParameter("dateTime"));
             throw e;
         }
-        Meal m = new Meal(dateTime,
-                request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
+        Meal m = new Meal(dateTime, request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
         String id = request.getParameter("id");
         if (id.isEmpty()) {
             storage.create(m);
@@ -83,16 +90,5 @@ public class MealServlet extends HttpServlet {
 
     private int getIdFromRequest(HttpServletRequest r) {
         return Integer.parseInt(r.getParameter("id"));
-    }
-
-    private void forwardToMealsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("no action was sent - show all meals");
-        inputFilteredMealsListIntoRequestAttribute(request);
-        request.getRequestDispatcher("meals.jsp").forward(request, response);
-    }
-
-    private void inputFilteredMealsListIntoRequestAttribute(HttpServletRequest request) {
-        request.setAttribute("meals", MealsUtil.filteredByStreams(storage.getAll(),
-                LocalTime.of(0, 0), LocalTime.of(23, 59), MealsUtil.CALORIES_PER_DAY));
     }
 }
