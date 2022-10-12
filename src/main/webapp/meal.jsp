@@ -14,16 +14,15 @@
 <form method="POST" action='meals'>
     <jsp:useBean id="TimeUtil" class="ru.javawebinar.topjava.util.TimeUtil"/>
     <input type="hidden" name="id" value="${meal.id}">
-    Date and time : <input
-        type="text" name="dateTime"
-        placeholder="2022-01-30 12:00"
-        value="${TimeUtil.getFormattedDate(meal.dateTime)}"/> <br/>
+    Date and time :<input
+        type="datetime-local" id="date" name="dateTime" value="${TimeUtil.getFormattedDate(meal.dateTime)}"/> <br/>
     Description : <input
         type="text" name="description"
         value="${meal.description}"/> <br/>
     Calories : <input type="number" name="calories" min="10" max="10000"
-                      value="<c:out value="${meal.calories}" />"/> <br/>
-    <input type="submit" value="Submit"/>
+                      value="${meal.calories}"/> <br/>
+    <button type="submit" name="submit">Save</button>
+    <button type="reset" onclick="history.back()">Cancel</button>
 </form>
 </body>
 </html>

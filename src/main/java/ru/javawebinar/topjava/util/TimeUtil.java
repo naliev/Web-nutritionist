@@ -16,6 +16,6 @@ public class TimeUtil {
     }
 
     public static LocalDateTime getDateFromString(String str) {
-        return LocalDateTime.parse(str, DATE_FORMATTER);
+        return LocalDateTime.parse(str);
     }
 }
