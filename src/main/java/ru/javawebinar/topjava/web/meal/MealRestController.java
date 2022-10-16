@@ -1,8 +1,52 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.util.List;
+
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+
+@Controller
 public class MealRestController {
-    private MealService service;
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final MealService service;
 
+    @Autowired
+    public MealRestController(MealService mealService) {
+        service = mealService;
+    }
+
+    public Meal create(Meal meal) {
+        int authUserId = authUserId();
+        log.info("save meal {} for user {}", meal.getId(), authUserId);
+        checkNew(meal);
+        return service.create(meal, authUserId);
+    }
+
+    public boolean delete(int id) {
+        int authUserId = authUserId();
+        log.info("delete meal {} for user {}", id, authUserId);
+        return service.delete(id, authUserId);
+    }
+
+    public Meal get(int id) {
+        int authUserId = authUserId();
+        log.info("get meal {} for user {}", id, authUserId);
+        return service.get(id, authUserId);
+    }
+
+    public List<MealTo> getAll() {
+        int authUserId = authUserId();
+        log.info("get all meals without filter for user {}", authUserId);
+        return MealsUtil.getTos(service.getAll(authUserId), authUserCaloriesPerDay());
+    }
 }
