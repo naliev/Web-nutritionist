@@ -12,20 +12,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
+    private static final String START_DATE = "start_date";
+    private static final String END_DATE = "end_date";
+    private static final String START_TIME = "start_time";
+    private static final String END_TIME = "end_time";
+    private static final String CONFIG_LOCATION = "spring/spring-app.xml";
 
+    private ConfigurableApplicationContext appCtx;
     private MealRestController mRC;
 
     @Override
     public void init() {
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            mRC = appCtx.getBean(MealRestController.class);
-        }
+        appCtx = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+        mRC = appCtx.getBean(MealRestController.class);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        appCtx.close();
     }
 
     @Override
@@ -65,6 +78,22 @@ public class MealServlet extends HttpServlet {
                         mRC.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "set_date_time_filter":
+                log.debug("Set date/time filter");
+                request.setAttribute("meals", mRC.getAllFiltered(
+                        !request.getParameter(START_DATE).isEmpty() ? LocalDate.parse(request.getParameter(START_DATE)) : LocalDate.MIN,
+                        !request.getParameter(START_TIME).isEmpty() ? LocalTime.parse(request.getParameter(START_TIME)) : LocalTime.MIN,
+                        !request.getParameter(END_DATE).isEmpty() ? LocalDate.parse(request.getParameter(END_DATE)) : LocalDate.MAX,
+                        !request.getParameter(END_TIME).isEmpty() ? LocalTime.parse(request.getParameter(END_TIME)) : LocalTime.MAX
+                ));
+                /* For testing
+                request.setAttribute(START_DATE, request.getParameter(START_DATE));
+                request.setAttribute(START_TIME, request.getParameter(START_TIME));
+                request.setAttribute(END_DATE, request.getParameter(END_DATE));
+                request.setAttribute(END_TIME, request.getParameter(END_TIME));
+                 */
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
