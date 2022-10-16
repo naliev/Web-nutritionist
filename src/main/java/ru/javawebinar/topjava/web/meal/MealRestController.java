@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
@@ -27,9 +28,16 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         int authUserId = authUserId();
-        log.info("save meal {} for user {}", meal.getId(), authUserId);
+        log.info("save meal {} for user {}", meal, authUserId);
         checkNew(meal);
         return service.create(meal, authUserId);
+    }
+
+    public void update(Meal meal, int id) {
+        int authUserId = authUserId();
+        log.info("update {} with id={} for user {}", meal, id, authUserId);
+        assureIdConsistent(meal, id);
+        service.update(meal, authUserId);
     }
 
     public boolean delete(int id) {
