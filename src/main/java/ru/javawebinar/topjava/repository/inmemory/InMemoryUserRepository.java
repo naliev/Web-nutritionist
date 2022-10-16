@@ -6,56 +6,40 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
-    private final Map<Integer, User> repository = new ConcurrentHashMap<>();
-    private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return repository.remove(id) != null;
+        return true;
     }
 
     @Override
     public User save(User user) {
-        if (user.isNew()) {
-            log.info("save {}", user);
-            user.setId(counter.incrementAndGet());
-            repository.put(user.getId(), user);
-            return user;
-        }
-        log.info("update {}", user);
-        return repository.computeIfPresent(user.getId(), (integer, oldUser) -> user);
+        log.info("save {}", user);
+        return user;
     }
 
     @Override
     public User get(int id) {
         log.info("get {}", id);
-        return repository.get(id);
+        return null;
     }
 
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream()
-                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
-                .collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.values().stream()
-                .filter((user -> user.getEmail().equals(email)))
-                .findFirst().orElse(null);
+        return null;
     }
 }

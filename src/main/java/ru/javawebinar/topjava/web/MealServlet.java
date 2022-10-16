@@ -2,43 +2,28 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.web.meal.MealRestController;
+import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    private static final String START_DATE = "start_date";
-    private static final String END_DATE = "end_date";
-    private static final String START_TIME = "start_time";
-    private static final String END_TIME = "end_time";
-    private static final String CONFIG_LOCATION = "spring/spring-app.xml";
 
-    private ConfigurableApplicationContext appCtx;
-    private MealRestController mRC;
+    private MealRepository repository;
 
     @Override
     public void init() {
-        appCtx = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
-        mRC = appCtx.getBean(MealRestController.class);
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-        appCtx.close();
+        repository = new InMemoryMealRepository();
     }
 
     @Override
@@ -50,13 +35,9 @@ public class MealServlet extends HttpServlet {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        if (meal.isNew()) {
-            log.info("Create {}", meal);
-            mRC.create(meal);
-        } else {
-            log.info("Update {}", meal);
-            mRC.update(meal, meal.getId());
-        }
+
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        repository.save(meal);
         response.sendRedirect("meals");
     }
 
@@ -68,37 +49,22 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
-                mRC.delete(id);
+                repository.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        mRC.get(getId(request));
+                        repository.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
-                break;
-            case "set_date_time_filter":
-                log.debug("Set date/time filter");
-                request.setAttribute("meals", mRC.getAllFiltered(
-                        !request.getParameter(START_DATE).isEmpty() ? LocalDate.parse(request.getParameter(START_DATE)) : LocalDate.MIN,
-                        !request.getParameter(START_TIME).isEmpty() ? LocalTime.parse(request.getParameter(START_TIME)) : LocalTime.MIN,
-                        !request.getParameter(END_DATE).isEmpty() ? LocalDate.parse(request.getParameter(END_DATE)) : LocalDate.MAX,
-                        !request.getParameter(END_TIME).isEmpty() ? LocalTime.parse(request.getParameter(END_TIME)) : LocalTime.MAX
-                ));
-                /* For testing
-                request.setAttribute(START_DATE, request.getParameter(START_DATE));
-                request.setAttribute(START_TIME, request.getParameter(START_TIME));
-                request.setAttribute(END_DATE, request.getParameter(END_DATE));
-                request.setAttribute(END_TIME, request.getParameter(END_TIME));
-                 */
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals", mRC.getAll());
+                request.setAttribute("meals",
+                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
