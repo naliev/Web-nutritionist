@@ -31,12 +31,12 @@
             </tr>
             </thead>
             <tr>
-                <td><label>Start Date: <input type="date" name="start_date" value="${start_date}"></label></td>
-                <td><label>Start Time: <input type="time" name="start_time" value="${start_time}"></label></td>
+                <td><label>Start Date: <input type="date" name="start_date" value="${param.start_date}"></label></td>
+                <td><label>Start Time: <input type="time" name="start_time" value="${param.start_time}"></label></td>
             </tr>
             <tr>
-                <td><label>End Date: <input type="date" name="end_date" value="${end_date}"></label></td>
-                <td><label>End Time: <input type="time" name="end_time" value="${end_time}"></label></td>
+                <td><label>End Date: <input type="date" name="end_date" value="${param.end_date}"></label></td>
+                <td><label>End Time: <input type="time" name="end_time" value="${param.end_time}"></label></td>
             </tr>
         </table>
         <br>
