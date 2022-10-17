@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -20,10 +19,9 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final MealService service;
 
-    @Autowired
     public MealRestController(MealService mealService) {
         service = mealService;
     }
@@ -42,10 +40,10 @@ public class MealRestController {
         service.update(meal, authUserId);
     }
 
-    public boolean delete(int id) {
+    public void delete(int id) {
         int authUserId = authUserId();
         log.info("delete meal {} for user {}", id, authUserId);
-        return service.delete(id, authUserId);
+        service.delete(id, authUserId);
     }
 
     public Meal get(int id) {
@@ -60,10 +58,14 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(authUserId), authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAllFiltered(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+    public List<MealTo> getAllFiltered(String startDate, String startTime, String endDate, String endTime) {
         int authUserId = authUserId();
         log.info("get all with filter for user {}", authUserId);
-        return MealsUtil.getFilteredTos(service.getAllFiltered(authUserId, startDate, endDate), authUserCaloriesPerDay(), startTime, endTime);
-
+        return MealsUtil.getFilteredTos(service.getAllFiltered(authUserId,
+                        startDate.isEmpty() ? LocalDate.MIN : LocalDate.parse(startDate),
+                        endDate.isEmpty() ? LocalDate.MAX : LocalDate.parse(endDate)
+                ), authUserCaloriesPerDay(),
+                startTime.isEmpty() ? LocalTime.MIN : LocalTime.parse(startTime),
+                endTime.isEmpty() ? LocalTime.MAX : LocalTime.parse(endTime));
     }
 }
