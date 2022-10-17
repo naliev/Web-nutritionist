@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -27,12 +25,12 @@ public class MealServlet extends HttpServlet {
     private static final String CONFIG_LOCATION = "spring/spring-app.xml";
 
     private ConfigurableApplicationContext appCtx;
-    private MealRestController mRC;
+    private MealRestController mealRestController;
 
     @Override
     public void init() {
         appCtx = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
-        mRC = appCtx.getBean(MealRestController.class);
+        mealRestController = appCtx.getBean(MealRestController.class);
     }
 
     @Override
@@ -52,10 +50,10 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")));
         if (meal.isNew()) {
             log.info("Create {}", meal);
-            mRC.create(meal);
+            mealRestController.create(meal);
         } else {
             log.info("Update {}", meal);
-            mRC.update(meal, meal.getId());
+            mealRestController.update(meal, meal.getId());
         }
         response.sendRedirect("meals");
     }
@@ -68,37 +66,31 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
-                mRC.delete(id);
+                mealRestController.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        mRC.get(getId(request));
+                        mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "set_date_time_filter":
                 log.debug("Set date/time filter");
-                request.setAttribute("meals", mRC.getAllFiltered(
-                        !request.getParameter(START_DATE).isEmpty() ? LocalDate.parse(request.getParameter(START_DATE)) : LocalDate.MIN,
-                        !request.getParameter(START_TIME).isEmpty() ? LocalTime.parse(request.getParameter(START_TIME)) : LocalTime.MIN,
-                        !request.getParameter(END_DATE).isEmpty() ? LocalDate.parse(request.getParameter(END_DATE)) : LocalDate.MAX,
-                        !request.getParameter(END_TIME).isEmpty() ? LocalTime.parse(request.getParameter(END_TIME)) : LocalTime.MAX
+                request.setAttribute("meals", mealRestController.getAllFiltered(
+                        request.getParameter(START_DATE),
+                        request.getParameter(START_TIME),
+                        request.getParameter(END_DATE),
+                        request.getParameter(END_TIME)
                 ));
-                /* For testing
-                request.setAttribute(START_DATE, request.getParameter(START_DATE));
-                request.setAttribute(START_TIME, request.getParameter(START_TIME));
-                request.setAttribute(END_DATE, request.getParameter(END_DATE));
-                request.setAttribute(END_TIME, request.getParameter(END_TIME));
-                 */
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals", mRC.getAll());
+                request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
