@@ -1,19 +1,21 @@
 package ru.javawebinar.topjava.repository.inmemory;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
@@ -42,31 +44,36 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return repository.get(userId).remove(id) != null;
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals != null && meals.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return repository.get(userId).get(id);
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals == null ? null : repository.get(userId).get(id);
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
-        return sortAndCollect(repository.get(userId).values().stream());
+    public List<Meal> getAll(int userId) {
+        return filterAndSort(userId, meal -> true);
     }
 
     @Override
-    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
         if (startDate == null && endDate == null) {
             return getAll(userId);
         }
-        return sortAndCollect(repository.get(userId).values().stream()
-                .filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), startDate, endDate)));
+        return filterAndSort(userId, meal -> DateTimeUtil.isBetween(meal.getDate(), startDate, endDate, true));
     }
 
-    private Collection<Meal> sortAndCollect(Stream<Meal> opt) {
-        return opt.sorted(Comparator.comparing(Meal::getDate).reversed())
-                .collect(Collectors.toList());
+    private List<Meal> filterAndSort(int userId, Predicate<Meal> filter) {
+        Map<Integer, Meal> meals = repository.get(userId);
+        return CollectionUtils.isEmpty(meals) ? Collections.emptyList() :
+                meals.values().stream()
+                        .filter(filter)
+                        .sorted(Comparator.comparing(Meal::getDate).reversed())
+                        .collect(Collectors.toList());
     }
 }
 
