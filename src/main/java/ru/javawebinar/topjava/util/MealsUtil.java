@@ -19,14 +19,14 @@ public class MealsUtil {
 
     public static final List<Meal> meals = Arrays.asList(
             //User 1 meals:
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 30, 10, 0), "Завтрак", 500),
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 30, 13, 0), "Обед", 1000),
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 30, 20, 0), "Ужин", 500),
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 0, 0), "Еда на граничное значение", 100),
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 30, 10, 0), "USER1:Завтрак", 600),
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 30, 13, 0), "USER1:Обед", 1000),
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 30, 20, 0), "USER1:Ужин", 500),
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 0, 0), "USER1:Еда на граничное значение", 1200),
             //User 2 meals:
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 10, 0), "Завтрак", 1000),
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 13, 0), "Обед", 500),
-            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 20, 0), "Ужин", 410)
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 10, 0), "USER2:Завтрак", 1000),
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 13, 0), "USER2:Обед", 500),
+            new Meal(LocalDateTime.of(2022, Month.OCTOBER, 31, 20, 0), "USER2:Ужин", 410)
     );
 
     public static List<MealTo> getTos(Collection<Meal> meals, int caloriesPerDay) {
@@ -34,7 +34,7 @@ public class MealsUtil {
     }
 
     public static List<MealTo> getFilteredTos(Collection<Meal> meals, int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
-        return filterByPredicate(meals, caloriesPerDay, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime));
+        return filterByPredicate(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime, false));
     }
 
     private static List<MealTo> filterByPredicate(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
