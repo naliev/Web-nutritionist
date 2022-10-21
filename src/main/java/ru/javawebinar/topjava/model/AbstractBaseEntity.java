@@ -2,7 +2,7 @@ package ru.javawebinar.topjava.model;
 
 public abstract class AbstractBaseEntity {
     protected Integer id;
-
+    public static final int START_SEQ = 100000;
     protected AbstractBaseEntity(Integer id) {
         this.id = id;
     }
