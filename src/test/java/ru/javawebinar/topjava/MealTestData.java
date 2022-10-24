@@ -9,25 +9,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
-    public static final int MEAL1_ID = START_SEQ + 3;
+    public static final int USER_MEAL1_ID = START_SEQ + 3;
     public static final int NOT_FOUND = 10;
 
-    public static final Meal MEAL1 = new Meal(MEAL1_ID, LocalDateTime.parse("2022-10-20T10:00:00"), "USER1: Breakfast", 500);
-    public static final Meal MEAL2 = new Meal(MEAL1_ID + 1, LocalDateTime.parse("2022-10-20T13:00:00"), "USER1: Lunch", 1000);
-    public static final Meal MEAL3 = new Meal(MEAL1_ID + 2, LocalDateTime.parse("2022-10-20T20:00:00"), "USER1: Dinner", 500);
-    public static final Meal MEAL4 = new Meal(MEAL1_ID + 3, LocalDateTime.parse("2022-10-21T10:00:00"), "USER1: Breakfast", 500);
-    public static final Meal MEAL5 = new Meal(MEAL1_ID + 4, LocalDateTime.parse("2022-10-21T13:00:00"), "USER1: Lunch", 1000);
-    public static final Meal MEAL6 = new Meal(MEAL1_ID + 5, LocalDateTime.parse("2022-10-21T20:00:00"), "USER1: Dinner", 510);
-    public static final Meal MEAL7 = new Meal(MEAL1_ID + 6, LocalDateTime.parse("2022-10-20T14:00:00"), "USER2: Lunch", 510);
-    public static final Meal MEAL8 = new Meal(MEAL1_ID + 7, LocalDateTime.parse("2022-10-20T21:00:00"), "USER2: Dinner", 1500);
+    public static final Meal userMeal1 = new Meal(USER_MEAL1_ID, LocalDateTime.of(2022, 10, 20, 10, 0), "USER1: Breakfast", 500);
+    public static final Meal userMeal2 = new Meal(USER_MEAL1_ID + 1, LocalDateTime.of(2022, 10, 20, 13, 0), "USER1: Lunch", 1000);
+    public static final Meal userMeal3 = new Meal(USER_MEAL1_ID + 2, LocalDateTime.of(2022, 10, 20, 20, 0), "USER1: Dinner", 500);
+    public static final Meal userMeal4 = new Meal(USER_MEAL1_ID + 3, LocalDateTime.of(2022, 10, 21, 10, 0), "USER1: Breakfast", 500);
+    public static final Meal userMeal5 = new Meal(USER_MEAL1_ID + 4, LocalDateTime.of(2022, 10, 21, 13, 0), "USER1: Lunch", 1000);
+    public static final Meal userMeal6 = new Meal(USER_MEAL1_ID + 5, LocalDateTime.of(2022, 10, 21, 20, 0), "USER1: Dinner", 510);
+    public static final Meal adminMeal1 = new Meal(USER_MEAL1_ID + 6, LocalDateTime.of(2022, 10, 20, 14, 0), "USER2: Lunch", 510);
+    public static final Meal adminMeal2 = new Meal(USER_MEAL1_ID + 7, LocalDateTime.of(2022, 10, 20, 21, 0), "USER2: Dinner", 1500);
 
     public static Meal getNew() {
         return new Meal(null, LocalDateTime.MAX, "New meal", 2525);
     }
 
     public static Meal getUpdated() {
-        Meal updated = new Meal(MEAL1);
-        updated.setId(MEAL1_ID);
+        Meal updated = new Meal(userMeal1);
+        updated.setId(USER_MEAL1_ID);
         updated.setDateTime(LocalDateTime.parse("2077-10-20T10:00:00"));
         updated.setCalories(2525);
         updated.setDescription("Updated meal");
