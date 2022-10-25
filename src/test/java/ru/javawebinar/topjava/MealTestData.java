@@ -28,7 +28,7 @@ public class MealTestData {
     public static Meal getUpdated() {
         Meal updated = new Meal(userMeal1);
         updated.setId(USER_MEAL1_ID);
-        updated.setDateTime(LocalDateTime.parse("2077-10-20T10:00:00"));
+        updated.setDateTime(LocalDateTime.of(2077,10,20, 10,0));
         updated.setCalories(2525);
         updated.setDescription("Updated meal");
         return updated;
