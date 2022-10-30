@@ -13,7 +13,7 @@ import java.time.LocalTime;
         @NamedQuery(name = Meal.DELETE, query = "delete FROM Meal m WHERE m.user.id=?1 AND m.id=?2")
 })
 @Entity
-@Table(name = "meals")
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
 public class Meal extends AbstractBaseEntity {
 
     public static final String ALL_SORTED = "meal.getAll";
