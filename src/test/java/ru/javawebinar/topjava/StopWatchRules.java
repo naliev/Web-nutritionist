@@ -13,12 +13,13 @@ public class StopWatchRules {
 
     private static final Logger log = LoggerFactory.getLogger(StopWatchRules.class);
 
-    private static final StringBuilder results = new StringBuilder(String.format("%n"));
+    private static final StringBuilder results = new StringBuilder();
     public static final Stopwatch STOPWATCH = new Stopwatch() {
 
         @Override
         protected void finished(long nanos, Description description) {
-            summarizeInfo(description, nanos);
+            log.debug(String.format("%s %d ms %n", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
+            results.append(String.format("%-25s %d ms %n", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos)));
         }
 
     };
@@ -35,9 +36,4 @@ public class StopWatchRules {
         }
     };
 
-    private static void summarizeInfo(Description description, long nanos) {
-        String testResults = String.format("Test %s, spent %d ms %n", description.getMethodName(), TimeUnit.NANOSECONDS.toMicros(nanos));
-        log.debug(testResults);
-        results.append(testResults);
-    }
 }
