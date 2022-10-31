@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava;
 
-import org.junit.AssumptionViolatedException;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -18,30 +17,27 @@ public class StopWatchRules {
     public static final Stopwatch STOPWATCH = new Stopwatch() {
 
         @Override
-        protected void succeeded(long nanos, Description description) {
-            summarizeInfo(description, "succeeded", nanos);
+        protected void finished(long nanos, Description description) {
+            summarizeInfo(description, nanos);
         }
 
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            summarizeInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            summarizeInfo(description, "skipped", nanos);
-        }
     };
     public static final ExternalResource FINAL_RESULT = new ExternalResource() {
+        @Override
+        protected void before() {
+            results.setLength(0);
+            results.append(String.format("%n"));
+        }
+
         @Override
         protected void after() {
             log.info(results.toString());
         }
     };
 
-    private static void summarizeInfo(Description description, String status, long nanos) {
-        String testName = description.getMethodName();
-        results.append(String.format("Test %s %s, spent %d microseconds %n",
-                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+    private static void summarizeInfo(Description description, long nanos) {
+        String testResults = String.format("Test %s, spent %d ms %n", description.getMethodName(), TimeUnit.NANOSECONDS.toMicros(nanos));
+        log.debug(testResults);
+        results.append(testResults);
     }
 }
