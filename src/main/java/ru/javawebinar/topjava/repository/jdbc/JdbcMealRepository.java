@@ -8,13 +8,15 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class JdbcMealRepository<T> implements MealRepository {
+@Repository
+public class JdbcMealRepository implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -40,7 +42,7 @@ public abstract class JdbcMealRepository<T> implements MealRepository {
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", getDateTime(meal.getDateTime()))
+                .addValue("date_time", meal.getDateTime())
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {
@@ -78,9 +80,7 @@ public abstract class JdbcMealRepository<T> implements MealRepository {
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query(
-                "SELECT * FROM meals WHERE user_id=? AND date_time >=? AND date_time <? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, getDateTime(startDateTime), getDateTime(endDateTime));
+                "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
+                ROW_MAPPER, userId, startDateTime, endDateTime);
     }
-
-    protected abstract T getDateTime(LocalDateTime dateTime);
 }
