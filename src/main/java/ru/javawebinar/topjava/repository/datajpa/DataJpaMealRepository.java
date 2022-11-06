@@ -10,47 +10,34 @@ import java.util.List;
 @Repository
 public class DataJpaMealRepository implements MealRepository {
 
-    private final CrudMealRepository mealRepository;
-    private final CrudUserRepository userRepository;
+    private final CrudMealRepository crudRepository;
 
-    public DataJpaMealRepository(CrudMealRepository mealRepository, CrudUserRepository userRepository) {
-        this.mealRepository = mealRepository;
-        this.userRepository = userRepository;
+    public DataJpaMealRepository(CrudMealRepository crudRepository) {
+        this.crudRepository = crudRepository;
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (!meal.isNew() && get(meal.id(), userId) == null) {
-            return null;
-        }
-        meal.setUser(userRepository.getReferenceById(userId));
-        return mealRepository.save(meal);
+        return null;
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return mealRepository.delete(id, userId) != 0;
+        return false;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return mealRepository.findById(id)
-                .filter(meal -> meal.getUser().getId() == userId)
-                .orElse(null);
+        return null;
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return mealRepository.findAll(userId);
+        return null;
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return mealRepository.findAllBetweenHalfOpen(startDateTime, endDateTime, userId);
-    }
-
-    @Override
-    public Meal getWithUser(int id, int userId) {
-        return mealRepository.getWithUser(id, userId);
+        return null;
     }
 }
