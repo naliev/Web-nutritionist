@@ -14,15 +14,12 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - [Демо разрабатываемого приложения](http://topjava.herokuapp.com/)
 
 ### 29.09: Старт проекта
-
 - Начало проверки [вступительного задания](https://github.com/JavaOPs/topjava#-Домашнее-задание-hw0)
 
 #### 04.10 Дедлайн на сдачу HW0
-
 ### 06.10: 1-е занятие
 
 #### 13.10 Дедлайн подачи заявки на [дипломную программу](https://javaops.ru/view/register/diploma)
-
 - Разбор домашнего задания вступительного занятия (вместе с Optional)
 - Обзор используемых в проекте технологий. Интеграция ПО
 - Maven
@@ -32,7 +29,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание 1-го занятия (HW1 + Optional)
 
 ### 13.10: 2-е занятие
-
 - Разбор домашнего задания HW1 + Optional
 - Библиотека vs Фреймворк. Стандартные библиотеки Apache Commons, Guava
 - Слои приложения. Создание каркаса приложения
@@ -41,7 +37,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание (HW2 + Optional)
 
 ### 20.10: 3-е занятие
-
 - Разбор домашнего задания HW2 + Optional
 - Жизненный цикл Spring контекста
 - Тестирование через JUnit
@@ -55,7 +50,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание (HW3 + Optional)
 
 ### 27.10: 4-е занятие
-
 - Разбор домашнего задания HW3 + Optional
 - Методы улучшения качества кода
 - Spring: инициализация и популирование DB
@@ -63,11 +57,9 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - ORM. Hibernate. JPA
 - Поддержка HSQLDB
 - Домашнее задание (HW4 + Optional)
-
 #### Начало выполнения [выпускного проекта](https://github.com/JavaOPs/topjava/blob/master/graduation.md)
 
 ### 01.11: 5-е занятие
-
 - Обзор JDK 9/17. Миграция Topjava с 1.8 на 17
 - Разбор вопросов
 - Разбор домашнего задания HW4 + Optional
@@ -79,7 +71,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание (HW5 + Optional)
 
 ### 10.11: 6-е занятие
-
 - Разбор домашнего задания HW5 + Optional
 - Кэш Hibernate
 - Spring Web
@@ -93,7 +84,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 #### Большое ДЗ + выпускной проект + начинаем [курс BootJava](https://javaops.ru/view/bootjava) + подтягиваем "хвосты".
 
 ### 24.11: 7-е занятие
-
 - Разбор домашнего задания HW6 + Optional
 - Автогенерация DDL по модели
 - Тестирование Spring MVC
@@ -105,7 +95,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание (HW7 + Optional)
 
 ### 01.12: 8-е занятие
-
 - Разбор домашнего задания HW7 + Optional
 - WebJars. jQuery и JavaScript frameworks
 - Bootstrap
@@ -115,7 +104,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание (HW8 + Optional)
 
 ### 08.12: 9-е занятие
-
 - Разбор домашнего задания HW8 + Optional
 - Spring Binding
 - Spring Validation
@@ -128,7 +116,6 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Домашнее задание (HW9 + Optional)
 
 ### 15.12: 10-е занятие
-
 - Разбор домашнего задания HW10 + Optional
 - Кастомизация JSON (@JsonView) и валидации (groups)
 - Рефакторинг: jQuery конверторы и группы валидации по умолчанию
@@ -141,7 +128,18 @@ Maven/ Spring/ Security/ JPA(Hibernate)/ REST(Jackson)/ Bootstrap(CSS)/ jQuery +
 - Защита от межсайтовой подделки запросов (CSRF)
 - Домашнее задание (HW10)
 
-### ВНИМАНИЕ: НЕ НАДО в репозиторий делать Pull Request со своими решениями! См. видео выше - работа с проектом
+### 22.12: 11-е занятие
+
+- Разбор домашнего задания HW10 + Optional
+- Локализация datatables, ошибок валидации
+- Защита от XSS (Cross Site Scripting)
+- Обработка ошибок 404 (NotFound)
+- Доступ к AuthorizedUser
+- Ограничение модификации пользователей
+- Деплой [приложения в Heroku](http://topjava.herokuapp.com)
+- Собеседование. Разработка ПО
+- Возможные доработки приложения
+- Домашнее задание по проекту: составление резюме
 
 ### 26.12: Миграция на Spring-Boot
 

@@ -31,7 +31,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 public abstract class AbstractServiceTest {
 
     @ClassRule
-    public static ExternalResource r = TimingRules.SUMMARY;
+    public static ExternalResource summary = TimingRules.SUMMARY;
 
     @Rule
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
