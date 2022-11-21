@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,6 @@ public class RootController {
     private final UserService userService;
     private final MealService mealService;
 
-    @Autowired
     public RootController(UserService userService, MealService mealService) {
         this.userService = userService;
         this.mealService = mealService;
@@ -47,7 +45,7 @@ public class RootController {
     }
 
     @GetMapping("/meals")
-    public final String getAllMealForUser(Model model) {
+    public final String getAllMeals(Model model) {
         int userId = SecurityUtil.authUserId();
         log.info("get meals for user {}", userId);
         model.addAttribute("meals", MealsUtil.getTos(mealService.getAll(userId), SecurityUtil.authUserCaloriesPerDay()));

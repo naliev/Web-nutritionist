@@ -5,7 +5,6 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -53,7 +52,8 @@ public class JdbcUserRepository implements UserRepository {
                 """, parameterSource) == 0) {
             return null;
         }
-        checkAndUpdateRoles(user);
+        deleteRoles(user);
+        insertRoles(user);
         return user;
     }
 
@@ -97,30 +97,15 @@ public class JdbcUserRepository implements UserRepository {
                 });
     }
 
+    private void deleteRoles(User user) {
+        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.id());
+    }
+
     private User userWithRoles(User user) {
         if (user != null) {
             List<Role> roles = jdbcTemplate.queryForList("SELECT role FROM user_roles  WHERE user_id=?", Role.class, user.getId());
             user.setRoles(roles);
         }
         return user;
-    }
-
-    private void checkAndUpdateRoles(User user) {
-        jdbcTemplate.execute("CREATE TEMPORARY TABLE IF NOT EXISTS user_roles_tmp (role VARCHAR NOT NULL)");
-
-        List<Object[]> userRoles = new ArrayList<>();
-        for (String role : user.getRoles().stream().map(Enum::name).toArray(String[]::new)) {
-            userRoles.add(new Object[]{role});
-        }
-        jdbcTemplate.batchUpdate("INSERT INTO user_roles_tmp VALUES(?)", userRoles);
-
-        namedParameterJdbcTemplate.update("""
-                INSERT INTO user_roles (user_id, role)
-                SELECT :userId, role FROM user_roles_tmp WHERE role NOT IN (SELECT role FROM user_roles WHERE user_id=:userId);
-                DELETE FROM user_roles WHERE user_id=:userId AND role IN (
-                    SELECT role FROM user_roles WHERE role NOT IN (
-                        SELECT role FROM  user_roles_tmp));
-                DELETE FROM user_roles_tmp
-                """, new MapSqlParameterSource("userId", user.id()));
     }
 }
