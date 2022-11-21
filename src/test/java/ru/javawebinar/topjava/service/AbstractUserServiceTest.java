@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.hibernate.resource.beans.container.internal.NoSuchBeanException;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,11 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void setup() {
         cacheManager.getCache("users").clear();
         if (!isJdbcImplementation()) {
-            jpaUtil.clear2ndLevelHibernateCache();
+            try {
+                jpaUtil.clear2ndLevelHibernateCache();
+            } catch (Exception e) {
+                throw new NoSuchBeanException("Cannot find bean: JpaUtil in any scope", e);
+            }
         }
     }
 
