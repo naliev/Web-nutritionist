@@ -20,7 +20,6 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @RequestMapping("/meals")
-
 @Controller
 public class JspMealController extends AbstractMealController {
 
@@ -61,14 +60,15 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/filter")
-    public final String getAllMealForUserBetweenHalfOpen(Model model, HttpServletRequest request) {
+    public final String getMealBetweenInclusive(Model model, HttpServletRequest request) {
         int userId = SecurityUtil.authUserId();
         LocalDate fromDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate toDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime fromTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime toTime = parseLocalTime(request.getParameter("endTime"));
         log.info("get meals for user {} between {} {} and {} {}", userId, fromDate, toDate, fromTime, toTime);
-        model.addAttribute("meals", MealsUtil.getFilteredTos(super.service.getBetweenInclusive(fromDate, toDate, userId), SecurityUtil.authUserCaloriesPerDay(), fromTime, toTime));
+        model.addAttribute("meals", MealsUtil.getFilteredTos(
+                super.service.getBetweenInclusive(fromDate, toDate, userId), SecurityUtil.authUserCaloriesPerDay(), fromTime, toTime));
         return "meals";
     }
 
