@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -60,15 +58,12 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/filter")
-    public final String getMealBetweenInclusive(Model model, HttpServletRequest request) {
-        int userId = SecurityUtil.authUserId();
+    public final String getBetween(Model model, HttpServletRequest request) {
         LocalDate fromDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate toDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime fromTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime toTime = parseLocalTime(request.getParameter("endTime"));
-        log.info("get meals for user {} between {} {} and {} {}", userId, fromDate, toDate, fromTime, toTime);
-        model.addAttribute("meals", MealsUtil.getFilteredTos(
-                super.service.getBetweenInclusive(fromDate, toDate, userId), SecurityUtil.authUserCaloriesPerDay(), fromTime, toTime));
+        model.addAttribute("meals", super.getBetween(fromDate, fromTime, toDate, toTime));
         return "meals";
     }
 
