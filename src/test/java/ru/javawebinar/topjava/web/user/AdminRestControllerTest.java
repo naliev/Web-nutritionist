@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -84,15 +83,5 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(admin, guest, user));
-    }
-
-    @Test
-    void getWithMeals() throws Exception {
-        Assumptions.assumeTrue(isDataJpaBased(), "Only DataJpa implementation");
-        perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/with-meals"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(UserTestData.getWithMeals()));
     }
 }
