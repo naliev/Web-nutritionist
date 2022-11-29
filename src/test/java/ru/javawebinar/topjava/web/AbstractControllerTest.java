@@ -26,20 +26,20 @@ import javax.annotation.PostConstruct;
 @Transactional
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class, profiles = Profiles.REPOSITORY_IMPLEMENTATION)
 public abstract class AbstractControllerTest {
-
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
-    @Autowired
-    private Environment env;
 
     static {
         CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
         CHARACTER_ENCODING_FILTER.setForceEncoding(true);
     }
 
-    private MockMvc mockMvc;
-
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private Environment env;
+
+    private MockMvc mockMvc;
 
     @PostConstruct
     private void postConstruct() {
@@ -53,8 +53,7 @@ public abstract class AbstractControllerTest {
         return mockMvc.perform(builder);
     }
 
-    public boolean isDataJpaBased() {
-//        return Arrays.stream(env.getActiveProfiles()).noneMatch(Profiles.JDBC::equals);
+    protected boolean isDataJpaBased() {
         return env.acceptsProfiles(org.springframework.core.env.Profiles.of(Profiles.DATAJPA));
     }
 }

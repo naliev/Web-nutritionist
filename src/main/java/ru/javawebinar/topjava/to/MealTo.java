@@ -59,7 +59,8 @@ public class MealTo {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MealTo mealTo)) return false;
+        if (!(getClass().equals(o.getClass()))) return false;
+        MealTo mealTo = (MealTo) o;
         return calories == mealTo.calories && excess == mealTo.excess
                 && Objects.equals(id, mealTo.id) && Objects.equals(dateTime, mealTo.dateTime)
                 && Objects.equals(description, mealTo.description);

@@ -12,7 +12,7 @@ import java.util.Locale;
 public final class LocalTimeFormatter implements Formatter<LocalTime> {
 
     public String print(@NotNull LocalTime date, @NotNull Locale locale) {
-        return date.format(DateTimeFormatter.ISO_INSTANT);
+        return date.format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
     public LocalTime parse(@NotNull String formatted, @NotNull Locale locale) throws ParseException {

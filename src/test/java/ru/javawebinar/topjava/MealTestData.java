@@ -1,10 +1,8 @@
 package ru.javawebinar.topjava;
 
-import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.Month;
 import java.util.List;
@@ -31,10 +29,10 @@ public class MealTestData {
     public static final Meal adminMeal2 = new Meal(ADMIN_MEAL_ID + 1, of(2020, Month.JANUARY, 31, 21, 0), "Админ ужин", 1500);
 
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
-    public static final List<MealTo> mealsTo = SecurityUtil.authUserId() == AbstractBaseEntity.START_SEQ
-            ? MealsUtil.getTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY)
-            : List.of(MealsUtil.createTo(adminMeal2, false), MealsUtil.createTo(adminMeal1, false));
-    public static final List<MealTo> mealsToFiltered = MealsUtil.getFilteredTos(meals, MealsUtil.DEFAULT_CALORIES_PER_DAY, null, null);
+    public static final List<MealTo> mealsTo = MealsUtil.getTos(meals, UserTestData.user.getCaloriesPerDay());
+    public static final List<MealTo> mealsToFiltered = List.of(
+            MealsUtil.createTo(meal7, true), MealsUtil.createTo(meal6, true),
+            MealsUtil.createTo(meal3, false), MealsUtil.createTo(meal2, false));
 
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);

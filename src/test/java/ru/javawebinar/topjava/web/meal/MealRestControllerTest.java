@@ -20,7 +20,7 @@ import static ru.javawebinar.topjava.MealTestData.*;
 
 class MealRestControllerTest extends AbstractControllerTest {
 
-    String REST_URL = MealRestController.REST_URL + '/';
+    private final String REST_URL = MealRestController.REST_URL + '/';
 
     @Autowired
     private MealService service;
@@ -83,11 +83,21 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
                 .param("startDate", "2020-01-30")
                 .param("endDate", "2020-01-31")
-                //.param("endTime", "23:59:59")
-                .param("startTime", "00:00:00"))
+                .param("startTime", "13:00:00")
+                .param("endTime", "23:59:59"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(mealsToFiltered));
+    }
+
+    @Test
+    void getBetweenWithNulls() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDate", ""))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealsTo));
     }
 }

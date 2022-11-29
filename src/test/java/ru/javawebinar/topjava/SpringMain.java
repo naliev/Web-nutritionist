@@ -1,6 +1,8 @@
 package ru.javawebinar.topjava;
 
 import org.springframework.context.support.GenericXmlApplicationContext;
+import ru.javawebinar.topjava.formatter.LocalDateFormatter;
+import ru.javawebinar.topjava.formatter.LocalTimeFormatter;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.MealTo;
@@ -12,6 +14,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class SpringMain {
     public static void main(String[] args) {
@@ -34,6 +37,10 @@ public class SpringMain {
             filteredMealsWithExcess.forEach(System.out::println);
             System.out.println();
             System.out.println(mealController.getBetween(null, null, null, null));
+
+            LocalTimeFormatter formatter1 = new LocalTimeFormatter();
+            LocalDateFormatter formatter2 = new LocalDateFormatter();
+            System.out.println(formatter2.print(LocalDate.now(), Locale.ROOT) + " " + formatter1.print(LocalTime.now(), Locale.ROOT));
         }
     }
 }

@@ -7,7 +7,6 @@
 
     <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <property name="registerDefaultFormatters" value="false"/>
         <property name="formatters">
             <set>
                 <bean class="ru.javawebinar.topjava.formatter.LocalDateFormatter"/>
