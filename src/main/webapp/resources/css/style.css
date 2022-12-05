@@ -15,10 +15,12 @@ dd {
     vertical-align: top;
 }
 
+tr[data-user-enabled="true"],
 tr[data-meal-excess="false"] {
     color: green;
 }
 
+tr[data-user-enabled="false"],
 tr[data-meal-excess="true"] {
     color: red;
 }
