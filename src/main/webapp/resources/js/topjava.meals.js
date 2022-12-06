@@ -1,4 +1,5 @@
 const mealAjaxUrl = "profile/meals/";
+let formWithFilter;
 
 const ctx = {
     ajaxUrl: mealAjaxUrl
@@ -11,7 +12,6 @@ function filter() {
         data: formWithFilter.serialize()
     }).done(function (data) {
         refreshTable(data);
-        successNoty("Meal has been filtered");
     });
 }
 
@@ -19,11 +19,11 @@ function clearFilter() {
     $.get(mealAjaxUrl, function (data) {
         formWithFilter.trigger("click");
         refreshTable(data);
-        successNoty("Filter cleared");
     });
 }
 
 $(function () {
+    formWithFilter = $('#mealsFilter')
     makeEditable(
         $("#datatable").DataTable({
             "paging": false,
@@ -50,7 +50,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })

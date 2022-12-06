@@ -57,7 +57,6 @@ function changeEnabled(checkbox) {
         checkbox.closest('tr').attr("data-user-enabled", enable);
         successNoty("Changed");
     }).fail(function () {
-        checkbox.closest('tr').attr("data-user-enabled", !enable);
-        successNoty("Error");
+        $(checkbox).prop("checked", !enable);
     });
 }
