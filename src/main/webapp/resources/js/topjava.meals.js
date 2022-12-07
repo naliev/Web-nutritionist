@@ -2,7 +2,10 @@ const mealAjaxUrl = "profile/meals/";
 let formWithFilter;
 
 const ctx = {
-    ajaxUrl: mealAjaxUrl
+    ajaxUrl: mealAjaxUrl,
+    updateTable: function () {
+        filter();
+    }
 }
 
 function filter() {
@@ -18,6 +21,7 @@ function filter() {
 function clearFilter() {
     $.get(mealAjaxUrl, function (data) {
         formWithFilter.trigger("click");
+        formWithFilter[0].reset();
         refreshTable(data);
     });
 }
