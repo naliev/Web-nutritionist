@@ -24,11 +24,16 @@ class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void unAuth() throws Exception {
+    void unAuthOnUserPage() throws Exception {
         perform(get("/users"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("http://localhost/login"));
+
+    }
+
+    @Test
+    void unAuthOnMealPage() throws Exception {
         perform(get("/meals"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
