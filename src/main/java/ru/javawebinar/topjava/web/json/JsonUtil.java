@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static ru.javawebinar.topjava.web.json.JacksonObjectMapper.getMapper;
 
@@ -38,10 +37,14 @@ public class JsonUtil {
         }
     }
 
-    public static <T> String writeIgnoreProps(T obj, String... ignoreProps) {
+    public static <T> String writeAdditionProps(T obj, String addName, Object addValue) {
+        return writeAdditionProps(obj, Map.of(addName, addValue));
+    }
+
+    public static <T> String writeAdditionProps(T obj, Map<String, Object> addProps) {
         Map<String, Object> map = getMapper().convertValue(obj, new TypeReference<>() {
         });
-        map.keySet().removeAll(Set.of(ignoreProps));
+        map.putAll(addProps);
         return writeValue(map);
     }
 }

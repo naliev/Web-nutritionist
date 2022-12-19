@@ -27,5 +27,22 @@
                 </button>
             </form:form>
         </sec:authorize>
+
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbar-drop" data-toggle="dropdown">
+                    ${pageContext.response.locale}
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item"
+                       href="<%=request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI)%>?lang=en">English</a>
+                    <a class="dropdown-item"
+                       href="<%=request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI)%>?lang=ru">Русский</a>
+                </div>
+            </li>
+        </ul>
     </div>
 </nav>
+<script type="text/javascript">
+    const locale = "${pageContext.response.locale}";
+</script>

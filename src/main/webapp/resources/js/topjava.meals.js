@@ -10,7 +10,7 @@ const ctx = {
             data: $("#filter").serialize()
         }).done(updateTableByData);
     }
-};
+}
 
 function clearFilter() {
     $("#filter")[0].reset();
@@ -69,8 +69,9 @@ $(function () {
     });
 
 //  http://xdsoft.net/jqplugins/datetimepicker/
-    var startDate = $('#startDate');
-    var endDate = $('#endDate');
+    $.datetimepicker.setLocale(locale);
+    let startDate = $('#startDate');
+    let endDate = $('#endDate');
     startDate.datetimepicker({
         timepicker: false,
         format: 'Y-m-d',

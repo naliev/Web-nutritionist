@@ -258,7 +258,7 @@
                     <artifactId>jquery</artifactId>
                 </exclusion>
                 <exclusion>
-                    <!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
+<!--                https://getbootstrap.com/docs/4.5/components/popovers         -->
                     <groupId>org.webjars</groupId>
                     <artifactId>popper.js</artifactId>
                 </exclusion>
@@ -316,6 +316,12 @@
             <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.7.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -342,6 +348,12 @@
             <artifactId>junit-platform-launcher</artifactId>
             <version>1.9.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

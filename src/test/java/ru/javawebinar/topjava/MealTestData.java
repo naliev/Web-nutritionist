@@ -1,9 +1,12 @@
 package ru.javawebinar.topjava;
 
+import org.jetbrains.annotations.Contract;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
+import javax.validation.constraints.NotNull;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
@@ -29,11 +32,27 @@ public class MealTestData {
 
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
 
+    @NotNull
+    @Contract(" -> new")
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);
     }
 
+    @NotNull
+    @Contract(" -> new")
+    public static Meal getNewInvalid() {
+        return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Неверный ужин", 9);
+    }
+
+    @NotNull
+    @Contract(" -> new")
     public static Meal getUpdated() {
-        return new Meal(MEAL1_ID, meal1.getDateTime().plusMinutes(2), "Обновленный завтрак", 200);
+        return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
+    }
+
+    @NotNull
+    @Contract(" -> new")
+    public static Meal getUpdatedInvalid() {
+        return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Неверный завтрак", 9);
     }
 }
